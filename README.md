@@ -13,19 +13,18 @@ go get -u github.com/godzillaframework/godzilla
 ```golang
 package main
 
-import (
-    "github.com/godzillaframework/godzilla"
-)
+import "github.com/godzillaframework/godzilla"
 
 func main() {
-    godz := godzilla.New()
+	godz := godzilla.New()
 
-    wb.Get("/hello", func(ctx godz.Context) {
-        ctx.SendString("Helo Friends!!")
-    })
+	godz.Get("/hello", func(ctx godzilla.Context) {
+		ctx.SendString("Hello")
+	})
 
-    wb.Start(":3000")
+	godz.Start(":3000")
 }
+
 ```
 
 - for more tutorials visit the [docs](https://github.com/godzillaframework/godzilla/blob/master/docs/learnwebfr.md)
