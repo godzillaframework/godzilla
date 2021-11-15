@@ -17,10 +17,10 @@ jobs:
       - name: Install Go Deps
         run: |
           go mod tidy
-      
-      - name: Build
+
+      - name: Test
         run: |
-          go build webfr.go
+          go test
 
   macosbuild:
     runs-on: macos-latest
@@ -35,7 +35,7 @@ jobs:
       - name: Install Go Deps
         run: |
           go mod tidy
-      
-      - name: Build
-        run: | 
-          go build webfr.go
+    
+      - name: Test
+        run: |
+          go test
