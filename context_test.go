@@ -15,13 +15,13 @@ func TestNext(t *testing.T) {
 		{path: "/unauthorized", middleware: unAuthorizedHandler, handler: emptyHandler},
 	}
 
-	godzilla := setupGodzilla()
+	wbf := setupWebfr()
 
 	for _, r := range routes {
 		wbf.Get(r.path, r.middleware, r.handler)
 	}
 
-	startgodzillafr(godzilla)
+	startWebfr(wbf)
 
 	testCases := []struct {
 		path       string

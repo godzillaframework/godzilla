@@ -45,7 +45,6 @@ const (
 	MethodTrace   = "TRACE"
 )
 
-// these codes has been take from net/http
 const (
 	StatusContinue           = 100
 	StatusSwitchingProtocols = 101
