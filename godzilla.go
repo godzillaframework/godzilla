@@ -274,7 +274,7 @@ func New(settings ...*Settings) Godzilla {
 
 	gz.httpServer = gz.newHTTPServer()
 
-	return gb
+	return gz
 }
 
 // Start handling requests
