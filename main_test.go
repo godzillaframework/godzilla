@@ -1,4 +1,4 @@
-package main
+package godzilla_test
 
 import (
 	"fmt"
