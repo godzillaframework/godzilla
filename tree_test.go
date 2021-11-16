@@ -8,11 +8,10 @@ func catchPanic(f func()) (recv interface{}) {
 	}()
 
 	f()
-
 	return
 }
 
-type testRouter struct {
+type testRoute struct {
 	path     string
 	conflict bool
 }
@@ -64,8 +63,71 @@ func TestAddRoute(t *testing.T) {
 	}
 }
 
-type testRequest []struct {
+type testRequests []struct {
 	path   string
 	match  bool
 	params map[string]string
+}
+
+func TestMatchRoute(t *testing.T) {
+	tree := createRootNode()
+
+	routes := [...]string{
+		"/hi",
+		"/contact",
+		"/users/:id/",
+		"/books/*",
+		"/search/:item1/settings/:item2",
+		"/co",
+		"/c",
+		"/a",
+		"/ab",
+		"/doc/",
+		"/doc/go_faq.html",
+		"/doc/go1.html",
+		"/α",
+		"/β",
+	}
+	for _, route := range routes {
+		tree.addRoute(route, emptyHandlersChain)
+	}
+
+	requests := testRequests{
+		{"/a", true, nil},
+		{"/", false, nil},
+		{"/hi", true, nil},
+		{"/contact", true, nil},
+		{"/co", true, nil},
+		{"/con", false, nil},  // key mismatch
+		{"/cona", false, nil}, // key mismatch
+		{"/no", false, nil},   // no matching child
+		{"/ab", true, nil},
+		{"/α", true, nil},
+		{"/β", true, nil},
+		{"/users/test", true, map[string]string{"id": "test"}},
+		{"/books/title", true, nil},
+		{"/search/test1/settings/test2", true, map[string]string{"item1": "test1", "item2": "test2"}},
+		{"/search/test1", false, nil},
+		{"test", false, nil},
+	}
+	for _, request := range requests {
+		ctx := &context{paramValues: make(map[string]string)}
+		handler := tree.matchRoute(request.path, ctx)
+
+		if handler == nil {
+			if request.match {
+				t.Errorf("handle mismatch for route '%s': Expected non-nil handle", request.path)
+			}
+		} else if !request.match {
+			t.Errorf("handle mismatch for route '%s': Expected nil handle", request.path)
+		}
+
+		for expectedKey, expectedValue := range request.params {
+			actualValue := ctx.Param(expectedKey)
+			if actualValue != expectedValue {
+				t.Errorf(" mismatch for route '%s' parameter '%s' actual '%s', expected '%s'",
+					request.path, expectedKey, actualValue, expectedValue)
+			}
+		}
+	}
 }
