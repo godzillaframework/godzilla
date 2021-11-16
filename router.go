@@ -1,6 +1,8 @@
 package godzilla
 
 import (
+	"log"
+	"strings"
 	"sync"
 
 	"github.com/valyala/fasthttp"
@@ -105,4 +107,95 @@ func (r *router) allowed(reqMethod, path string, ctx *context) string {
 		allow += ", " + MethodOptions
 	}
 	return allow
+}
+
+func (r *router) Handler(fctx *fasthttp.RequestCtx) {
+	context := r.acquireCtx(fctx)
+	defer r.releaseCtx(context)
+
+	if r.settings.AutoRecover {
+		defer func(fctx *fasthttp.RequestCtx) {
+			if rcv := recover(); rcv != nil {
+				log.Printf("recovered from error: %v", rcv)
+				fctx.Error(fasthttp.StatusMessage(fasthttp.StatusInternalServerError),
+					fasthttp.StatusInternalServerError)
+			}
+		}(fctx)
+	}
+
+	path := GetString(fctx.URI().PathOriginal())
+
+	if r.settings.CaseInSensitive {
+		path = strings.ToLower(path)
+	}
+
+	method := GetString(fctx.Method())
+
+	var cacheKey string
+	useCache := !r.settings.DisableCaching &&
+		(method == MethodGet || method == MethodPost)
+	if useCache {
+		cacheKey = path + method
+		r.mutex.RLock()
+		cacheResult, ok := r.cache[cacheKey]
+
+		if ok {
+			context.handlers = cacheResult.handlers
+			context.paramValues = cacheResult.params
+			r.mutex.RUnlock()
+			context.handlers[0](context)
+			return
+		}
+		r.mutex.RUnlock()
+	}
+
+	if root := r.trees[method]; root != nil {
+		if handlers := root.matchRoute(path, context); handlers != nil {
+			context.handlers = handlers
+			context.handlers[0](context)
+
+			if useCache {
+				r.mutex.Lock()
+
+				if r.cacheLen == r.settings.CacheSize {
+					r.cache = make(map[string]*matchResult)
+					r.cacheLen = 0
+				}
+				r.cache[cacheKey] = &matchResult{
+					handlers: handlers,
+					params:   context.paramValues,
+				}
+				r.cacheLen++
+				r.mutex.Unlock()
+			}
+			return
+		}
+	}
+
+	if method == MethodOptions && r.settings.HandleOPTIONS {
+		if allow := r.allowed(method, path, context); len(allow) > 0 {
+			fctx.Response.Header.Set("Allow", allow)
+			return
+		}
+	} else if r.settings.HandleMethodNotAllowed {
+		if allow := r.allowed(method, path, context); len(allow) > 0 {
+			fctx.Response.Header.Set("Allow", allow)
+			fctx.SetStatusCode(fasthttp.StatusMethodNotAllowed)
+			fctx.SetContentTypeBytes(defaultContentType)
+			fctx.SetBodyString(fasthttp.StatusMessage(fasthttp.StatusMethodNotAllowed))
+			return
+		}
+	}
+
+	if r.notFound != nil {
+		r.notFound[0](context)
+		return
+	}
+
+	fctx.Error(fasthttp.StatusMessage(fasthttp.StatusNotFound),
+		fasthttp.StatusNotFound)
+}
+
+func (r *router) SetNotFound(handlers handlersChain) {
+	r.notFound = append(r.notFound, handlers...)
 }
