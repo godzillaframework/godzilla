@@ -33,3 +33,23 @@ type context struct {
 	handlers    handlersChain
 	index       int
 }
+
+func (ctx *context) Next() {
+	ctx.index++
+	if ctx.index < len(ctx.handlers) {
+		ctx.handlers[ctx.index](ctx)
+	}
+}
+
+func (ctx *context) Param(key string) string {
+	return ctx.paramValues[key]
+}
+
+func (ctx *context) Context() *fasthttp.Request {
+	return ctx.requestCtx
+}
+
+func (ctx *context) SendBytes(value []byte) Context {
+	ctx.requestCtx.Response.SetBodyRaw(value)
+	return ctx
+}
