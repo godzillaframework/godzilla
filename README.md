@@ -13,4 +13,4 @@ go get -u github.com/godzillaframework/godzilla
 ```golang
 ```
 
-- for more tutorials visit the [docs](https://github.com/godzillaframework/godzilla/blob/master/docs/learnwebfr.md)
+- for more tutorials visit the [docs](https://github.com/godzillaframework/godzilla/blob/master/docs/learngodzilla.md)
