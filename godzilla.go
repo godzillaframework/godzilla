@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	Version = "2.0.0"
-	Name    = "Godzilla"
+	version = "2.0.0"
+	name    = "Godzilla"
 
 	banner = `
 Running on %s`
@@ -371,7 +371,7 @@ func (gz *godzilla) Stop() error {
 
 	// check if shutdown was ok and server had valid address
 	if err == nil && gz.address != "" {
-		log.Printf("%s stopped listening on %s", Name, gz.address)
+		log.Printf("%s stopped listening on %s", name, gz.address)
 		return nil
 	}
 
@@ -509,6 +509,6 @@ func printStartupMessage(addr string) {
 	if prefork.IsChild() {
 		log.Printf("Started child proc #%v\n", os.Getpid())
 	} else {
-		log.Printf(banner, Version, addr)
+		log.Printf(banner, addr, version)
 	}
 }
