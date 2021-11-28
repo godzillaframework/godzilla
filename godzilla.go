@@ -517,6 +517,6 @@ func printStartupMessage(addr string) {
 	if prefork.IsChild() {
 		log.Printf("Started child proc #%v\n", os.Getpid())
 	} else {
-		log.Printf(banner, addr, version)
+		log.Println(banner, addr, version)
 	}
 }
