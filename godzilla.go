@@ -14,10 +14,18 @@ import (
 
 const (
 	version = "2.0.0"
-	name    = "Godzilla"
+	name    = "Godzilla Framework"
 
 	banner = `
-Running on %s`
+
+					___      .__.__  .__          
+	____   ____   __| _/______|__|  | |  | _____   
+   / ___\ /  _ \ / __ |\___   /  |  | |  | \__  \  
+  / /_/  >  <_> ) /_/ | /    /|  |  |_|  |__/ __ \_
+  \___  / \____/\____ |/_____ \__|____/____(____  /
+ /_____/             \/      \/                 \/ 
+
+    Server Running on %s`
 )
 
 const (
