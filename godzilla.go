@@ -147,24 +147,16 @@ type godzilla struct {
 
 // Settings struct holds server settings
 type Settings struct {
-	// Enable case sensitive routing
-	CaseInSensitive bool // default false
+	ReadBufferSize int
 
-	// Maximum size of LRU cache that will be used in routing if it's enabled
-	CacheSize int // default 1000
+	CaseInSensitive bool
 
-	// Enables answering with HTTP status code 405 if request does not match
-	// with any route, but there are another methods are allowed for that route
-	// otherwise answer with Not Found handlers or status code 404.
-	HandleMethodNotAllowed bool // default false
+	CacheSize int
 
-	// Enables automatic replies to OPTIONS requests if there are no handlers
-	// registered for that route
-	HandleOPTIONS bool // default false
+	HandleMethodNotAllowed bool
 
-	// Enables automatic recovering from panic while executing handlers by
-	// answering with HTTP status code 500 and logging error message without
-	// stopping service
+	HandleOPTIONS bool
+
 	AutoRecover bool // default false
 
 	// ServerName for sending in response headers
@@ -334,6 +326,7 @@ func (gz *godzilla) newHTTPServer() *fasthttp.Server {
 		ReadTimeout:                   gz.settings.ReadTimeout,
 		WriteTimeout:                  gz.settings.WriteTimeout,
 		IdleTimeout:                   gz.settings.IdleTimeout,
+		ReadBufferSize:                gz.settings.ReadBufferSize,
 	}
 }
 
