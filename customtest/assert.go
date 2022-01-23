@@ -22,15 +22,16 @@ func NotEqual(t *testing.T, expected, actual interface{}) {
 	}
 }
 
-func Nil(t *testing.T, expected, actual interface{}) {
-	if reflect.DeepEqual(expected, actual) {
-		tLog(t, "value should ne equal %#v", actual)
+func Nil(t *testing.T, object interface{}) {
+	if !isNil(object) {
+		tLog(t, "   <nil> (expected)\n\n\t!= %#v (actual)", object)
+		t.FailNow()
 	}
 }
 
-func notNil(t *testing.T, object interface{}) {
+func NotNil(t *testing.T, object interface{}) {
 	if isNil(object) {
-		tLog(t, "Expected value not to be nil", object)
+		tLog(t, "Expected value not to be <nil>", object)
 		t.FailNow()
 	}
 }
