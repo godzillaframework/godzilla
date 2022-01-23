@@ -9,7 +9,7 @@ import (
 
 func Equal(t *testing.T, expected, actual interface{}) {
 	if !reflect.DeepEqual(expected, actual) {
-		formattedLog(t, "   %v (expected)\n\n\t!= %v (actual)",
+		tLog(t, "   %v (expected)\n\n\t!= %v (actual)",
 			expected, actual)
 		t.FailNow()
 	}
@@ -17,20 +17,20 @@ func Equal(t *testing.T, expected, actual interface{}) {
 
 func NotEqual(t *testing.T, expected, actual interface{}) {
 	if reflect.DeepEqual(expected, actual) {
-		formattedLog(t, "value should not equal %#v", actual)
+		tLog(t, "value should not equal %#v", actual)
 		t.FailNow()
 	}
 }
 
 func Nil(t *testing.T, expected, actual interface{}) {
 	if reflect.DeepEqual(expected, actual) {
-		formattedLog(t, "value should ne equal %#v", actual)
+		tLog(t, "value should ne equal %#v", actual)
 	}
 }
 
 func notNil(t *testing.T, object interface{}) {
 	if isNil(object) {
-		formattedLog(t, "Expected value not to be nil", object)
+		tLog(t, "Expected value not to be nil", object)
 		t.FailNow()
 	}
 }
@@ -49,7 +49,7 @@ func isNil(object interface{}) bool {
 	return false
 }
 
-func formattedLog(t *testing.T, fmt string, args ...interface{}) {
+func tLog(t *testing.T, fmt string, args ...interface{}) {
 	_, file, line, _ := runtime.Caller(2)
 	file = filepath.Base(file)
 	targs := make([]interface{}, len(args)+2)
