@@ -10,7 +10,7 @@
 - Easy Peasy :)
 
 ## Features:
-
+- Log Middleware 
 
 ## Installation:
 ```
