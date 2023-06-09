@@ -3,6 +3,7 @@ module github.com/godzillaframework/godzilla
 go 1.17
 
 require (
+	github.com/aybabtme/rgbterm v0.0.0-20170906152045-cc83f3b3ce59
 	github.com/json-iterator/go v1.1.12
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
 	github.com/valyala/fasthttp v1.31.0
