@@ -24,7 +24,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"github.com/godzillaframework/godzilla/internal/color"
 )
 
 // Join multiple errors together into one error
@@ -61,7 +60,7 @@ func Format(err error) string {
 	for i := 0; i < lineLen; i++ {
 		line := lines[j]
 		if i > 0 {
-			line = " " + color.dim(line)
+			line = " " + interncolor.dim(line)
 		}
 		stack[i] = line
 		j--
