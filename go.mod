@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/json-iterator/go v1.1.12
+	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06
 	github.com/valyala/fasthttp v1.31.0
 	rogchap.com/v8go v0.9.0
 )

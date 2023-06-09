@@ -17,13 +17,51 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package ignore
+package gitignore
 
+import (
+	"io/fs"
+	"os"
+	"path/filepath"
+	"strings"
+
+	gitignore "github.com/sabhiram/go-gitignore"
+)
+
+// ignoreable values.
 var alwaysIgnore = []string{
 	"node_modules",
 	".git",
 	".DS_Store",
 	".vscode/",
 	".idea/",
-	"godzilla",
+	"bud",
+}
+
+// default ignores values
+var defaultIgnores = append([]string{"/bud"}, alwaysIgnore...)
+var defaultIgnore = gitignore.CompileIgnoreLines(defaultIgnores...).MatchesPath
+
+// from filesystem
+func fromFS(fsys fs.FS) (ignore func(path string) bool) {
+	code, err := fs.ReadFile(fsys, ".gitignore")
+	if err != nil {
+		return defaultIgnore
+	}
+	lines := strings.Split(string(code), "\n")
+	lines = append(lines, alwaysIgnore...)
+	ignorer := gitignore.CompileIgnoreLines(lines...)
+	return ignorer.MatchesPath
+}
+
+// from
+func from(dir string) (ignore func(path string) bool) {
+	code, err := os.ReadFile(filepath.Join(dir, ".gitignore"))
+	if err != nil {
+		return defaultIgnore
+	}
+	lines := strings.Split(string(code), "\n")
+	lines = append(lines, alwaysIgnore...)
+	ignorer := gitignore.CompileIgnoreLines(lines...)
+	return ignorer.MatchesPath
 }
