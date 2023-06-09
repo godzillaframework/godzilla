@@ -17,7 +17,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package errs makes it easier to join multiple errors into a single error.
 package errs
 
 import (
@@ -26,8 +25,11 @@ import (
 	"strings"
 )
 
-// Join multiple errors together into one error
-func Join(errs ...error) error {
+type Errors interface {
+	Errors() []error
+}
+
+func joi(errs ...error) error {
 	var agg error
 	for _, err := range errs {
 		if err == nil {
@@ -44,23 +46,16 @@ func Join(errs ...error) error {
 	return agg
 }
 
-// Errors is an optional interface that be used to unwrap multiple errors
-type Errors interface {
-	Errors() []error
-}
-
-// Format reverses the error order to make the cause come first
-func Format(err error) string {
-	// Most errors in Bud are joined by a period
+func format(err error) string {
 	lines := strings.Split(err.Error(), ". ")
 	lineLen := len(lines)
 	stack := make([]string, lineLen)
 	j := lineLen - 1
-	// Reverse the error order
 	for i := 0; i < lineLen; i++ {
 		line := lines[j]
 		if i > 0 {
-			line = " " + interncolor.dim(line)
+			// line = " " + interncolor.dim(line)
+			line = " " + line
 		}
 		stack[i] = line
 		j--
