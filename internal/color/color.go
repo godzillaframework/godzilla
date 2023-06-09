@@ -34,3 +34,24 @@ func paint(msg string, r, b, g uint8) string {
 
 	return rgbterm.FgString(msg, r, g, b)
 }
+
+func dim(msg string) string {
+	if noColor {
+		return msg
+	}
+
+	return "\033[37m" + msg + "\033[0m"
+}
+
+func bold(msg string) string {
+	if noColor {
+		return msg
+	}
+
+	return "\033[1m" + msg + "\033[0m"
+}
+
+// colors
+func white(msg string) string {
+	return paint(msg, 226, 232, 240)
+}
