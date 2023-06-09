@@ -25,13 +25,39 @@ import (
 	"github.com/aybabtme/rgbterm"
 )
 
+// get local variable NO_COLOR
 var noColor = os.Getenv("NO_COLOR") != ""
 
-func paint(msg string, r, b, g uint8) string {
+// COLORS
+func white(msg string) string {
+	return paint(msg, 226, 232, 240)
+}
+
+func green(msg string) string {
+	return paint(msg, 43, 255, 99)
+}
+
+func blue(msg string) string {
+	return paint(msg, 43, 199, 255)
+}
+
+func yellow(msg string) string {
+	return paint(msg, 255, 237, 43)
+}
+
+func pink(msg string) string {
+	return paint(msg, 192, 38, 211)
+}
+
+func red(msg string) string {
+	return paint(msg, 255, 43, 43)
+}
+
+// COLOR METHODS
+func paint(msg string, r, g, b uint8) string {
 	if noColor {
 		return msg
 	}
-
 	return rgbterm.FgString(msg, r, g, b)
 }
 
@@ -39,7 +65,6 @@ func dim(msg string) string {
 	if noColor {
 		return msg
 	}
-
 	return "\033[37m" + msg + "\033[0m"
 }
 
@@ -47,11 +72,5 @@ func bold(msg string) string {
 	if noColor {
 		return msg
 	}
-
 	return "\033[1m" + msg + "\033[0m"
-}
-
-// colors
-func white(msg string) string {
-	return paint(msg, 226, 232, 240)
 }
